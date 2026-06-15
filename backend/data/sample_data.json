@@ -1,0 +1,37 @@
+[
+  {
+    "day": "Monday",
+    "meal": "Burger",
+    "prepared": 500,
+    "served": 420,
+    "wasted": 80
+  },
+  {
+    "day": "Tuesday",
+    "meal": "Burger",
+    "prepared": 500,
+    "served": 380,
+    "wasted": 120
+  },
+  {
+    "day": "Wednesday",
+    "meal": "Pizza",
+    "prepared": 400,
+    "served": 350,
+    "wasted": 50
+  },
+  {
+    "day": "Thursday",
+    "meal": "Burger",
+    "prepared": 500,
+    "served": 390,
+    "wasted": 110
+  },
+  {
+    "day": "Friday",
+    "meal": "Pasta",
+    "prepared": 450,
+    "served": 420,
+    "wasted": 30
+  }
+]
