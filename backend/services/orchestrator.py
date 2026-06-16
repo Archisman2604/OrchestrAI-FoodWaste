@@ -1,29 +1,24 @@
 class Orchestrator:
-    def __init__(self, prediction_service, analytics_service,
-                 recommendation_service, simulation_service):
-        self.prediction = prediction_service
-        self.analytics = analytics_service
-        self.recommendation = recommendation_service
-        self.simulation = simulation_service
+    def __init__(self, prediction, analytics, recommendation, simulation):
+        self.prediction = prediction
+        self.analytics = analytics
+        self.recommendation = recommendation
+        self.simulation = simulation
 
-    def process(self, request_type, data):
-        """
-        Main AI decision engine
-        """
-
+    def process(self, request_type, payload):
         if request_type == "predict":
-            return self.prediction.predict(data)
+            return self.prediction.predict(payload)
 
         elif request_type == "analytics":
-            return self.analytics.analyze(data)
+            return self.analytics.analyze(payload)
 
         elif request_type == "recommend":
-            return self.recommendation.generate(data)
+            return self.recommendation.recommend(payload)
 
         elif request_type == "simulate":
-            return self.simulation.run(data)
+            return self.simulation.simulate(payload)
 
-        else:
-            return {
-                "error": "Unknown request type"
-            }
+        return {
+            "error": "Invalid request type",
+            "valid_types": ["predict", "analytics", "recommend", "simulate"]
+        }

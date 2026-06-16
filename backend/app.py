@@ -2,11 +2,11 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 # Services
-from services.orchestrator import Orchestrator
 from services.prediction_service import PredictionService
 from services.analytics_service import AnalyticsService
 from services.recommendation_service import RecommendationService
 from services.simulation_service import SimulationService
+from services.orchestrator import Orchestrator
 
 app = Flask(__name__)
 CORS(app)
@@ -22,7 +22,7 @@ orchestrator = Orchestrator(
 )
 
 # ----------------------------
-# Health Check Route
+# Health Check
 # ----------------------------
 @app.route("/", methods=["GET"])
 def home():
@@ -32,7 +32,7 @@ def home():
     })
 
 # ----------------------------
-# AI Core Engine (MAIN ROUTE)
+# AI Core Engine
 # ----------------------------
 @app.route("/ai", methods=["POST"])
 def ai_engine():
@@ -58,7 +58,7 @@ def ai_engine():
 
 
 # ----------------------------
-# Run Server
+# Gunicorn entry point
 # ----------------------------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
