@@ -1,22 +1,24 @@
 import json
 
-def load_data():
-    with open("data/sample_data.json") as f:
-        return json.load(f)
+class AnalyticsService:
 
-def get_waste_summary():
-    data = load_data()
+    def load_data(self):
+        with open("data/sample_data.json") as f:
+            return json.load(f)
 
-    total_prepared = sum(x["prepared"] for x in data)
-    total_wasted = sum(x["wasted"] for x in data)
+    def analyze(self, data=None):
+        data = self.load_data()
 
-    waste_percent = round(
-        (total_wasted / total_prepared) * 100,
-        2
-    )
+        total_prepared = sum(x["prepared"] for x in data)
+        total_wasted = sum(x["wasted"] for x in data)
 
-    return {
-        "prepared": total_prepared,
-        "wasted": total_wasted,
-        "waste_percent": waste_percent
-    }
+        waste_percent = round(
+            (total_wasted / total_prepared) * 100,
+            2
+        )
+
+        return {
+            "prepared": total_prepared,
+            "wasted": total_wasted,
+            "waste_percent": waste_percent
+        }
