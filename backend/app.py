@@ -7,6 +7,7 @@ from services.analytics_service import AnalyticsService
 from services.recommendation_service import RecommendationService
 from services.simulation_service import SimulationService
 from services.orchestrator import Orchestrator
+from services.ai_insight_service import AIInsightService
 
 app = Flask(__name__)
 CORS(app)
@@ -18,7 +19,8 @@ orchestrator = Orchestrator(
     PredictionService(),
     AnalyticsService(),
     RecommendationService(),
-    SimulationService()
+    SimulationService(),
+    AIInsightService()
 )
 
 # ----------------------------
