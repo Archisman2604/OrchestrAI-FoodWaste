@@ -48,12 +48,17 @@ class Orchestrator:
                 "wasted": analytics["wasted"],
                 "waste_percent": analytics["waste_percent"]
             })
+            simulation = self.simulation.simulate({
+    "current_waste": analytics["wasted"],
+    "reduction_percent": 20
+})
 
             return {
                 "analytics": analytics,
                 "prediction": prediction,
                 "recommendation": recommendation,
-                "insight": insight
+                "insight": insight,
+                "simulation": simulation
             }
 
         return {
