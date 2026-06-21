@@ -767,25 +767,71 @@ function FoodInputPage() {
     handleFiles(e.dataTransfer.files);
   }, [handleFiles]);
 
-  const startDetection = () => {
-    if (!images.length) return;
-    setStage("detecting");
-    setProgress(0);
-    const interval = setInterval(() => {
-      setProgress(p => {
-        if (p >= 100) { clearInterval(interval); return 100; }
-        return p + Math.random() * 12 + 4;
-      });
-    }, 160);
-    setTimeout(() => {
-      clearInterval(interval);
-      setProgress(100);
-      setDetectedItems(mockDetectedItems);
-      setQuestions(mockQuestions.map(q => ({ ...q })));
-      setCurrentQ(0);
-      setTimeout(() => setStage("questions"), 400);
-    }, 3200);
-  };
+const startDetection = async () => {
+  if (!images.length) return;
+
+  setStage("detecting");
+  setProgress(0);
+
+  const interval = setInterval(() => {
+    setProgress((p) => {
+      if (p >= 90) return p;
+      return p + Math.random() * 12 + 4;
+    });
+  }, 160);
+
+  try {
+    const formData = new FormData();
+    formData.append("image_name", "uploaded_food.jpg");
+
+    const response = await fetch(
+      "http://127.0.0.1:10000/upload-food-image",
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+
+    const data = await response.json();
+
+    clearInterval(interval);
+    setProgress(100);
+
+    const detected = data.result.detected_food.map(
+      (food: string, index: number) => ({
+        name: food,
+        quantity: "~1 kg",
+        confidence: data.result.confidence,
+        category: "Food",
+      })
+    );
+
+    const questions = data.result.verification_questions.map(
+      (q: any, index: number) => ({
+        id: `q${index + 1}`,
+        question: q.question,
+        type:
+          q.type === "multiple_choice"
+            ? "choice"
+            : q.type === "yes_no"
+            ? "confirm"
+            : "choice",
+        options: q.options || [],
+      })
+    );
+
+    setDetectedItems(detected);
+    setQuestions(questions);
+    setCurrentQ(0);
+
+    setTimeout(() => setStage("questions"), 400);
+  } catch (err) {
+    console.error(err);
+    clearInterval(interval);
+    alert("Backend connection failed");
+    setStage("upload");
+  }
+};
 
   const answerQuestion = (answer: string) => {
     setQuestions(prev => prev.map((q, i) => i === currentQ ? { ...q, answered: answer } : q));
