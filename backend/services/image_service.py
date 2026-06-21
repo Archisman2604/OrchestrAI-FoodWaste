@@ -1,3 +1,6 @@
+from matplotlib import image
+
+
 class ImageService:
 
     def process_image(self, image_name):
@@ -15,7 +18,7 @@ class ImageService:
 
         return {
             "status": "success",
-            "image": image_name,
+            "image": str(image.filename),
             "detected_food": detected_food,
             "estimated_waste_kg": estimated_waste_kg,
             "confidence": confidence,

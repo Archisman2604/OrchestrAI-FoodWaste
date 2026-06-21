@@ -87,11 +87,15 @@ def upload_food_image():
 
     try:
 
-        image_name = request.form.get("image_name")
+        image = request.files.get("image")
 
-        result = image_service.process_image(
-            image_name
-        )
+        if not image:
+            return jsonify({
+                "success": False,
+                "error": "No image uploaded"
+            }), 400
+
+        result = image_service.process_image(image)
 
         return jsonify({
             "success": True,
@@ -99,7 +103,7 @@ def upload_food_image():
         })
 
     except Exception as e:
-
+        print("ERROR:", e)
         return jsonify({
             "success": False,
             "error": str(e)
