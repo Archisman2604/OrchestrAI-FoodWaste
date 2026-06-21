@@ -1,9 +1,6 @@
-from matplotlib import image
-
-
 class ImageService:
 
-    def process_image(self, image_name):
+    def process_image(self, image):
 
         detected_food = [
             "rice",
