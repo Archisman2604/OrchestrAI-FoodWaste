@@ -747,6 +747,7 @@ function ScanAnimation({ imageUrl }: { imageUrl: string }) {
 function FoodInputPage() {
   const [stage, setStage] = useState<InputStage>("upload");
   const [images, setImages] = useState<string[]>([]);
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [detectedItems, setDetectedItems] = useState<DetectedItem[]>([]);
   const [questions, setQuestions] = useState<FollowUpQuestion[]>([]);
@@ -755,12 +756,18 @@ function FoodInputPage() {
   const [progress, setProgress] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFiles = useCallback((files: FileList | null) => {
-    if (!files) return;
-    const urls = Array.from(files).filter(f => f.type.startsWith("image/")).map(f => URL.createObjectURL(f));
-    if (!urls.length) return;
-    setImages(prev => [...prev, ...urls].slice(0, 4));
-  }, []);
+const handleFiles = useCallback((files: FileList | null) => {
+  if (!files) return;
+
+  const validFiles = Array.from(files)
+    .filter(f => f.type.startsWith("image/"));
+
+  const urls = validFiles.map(f => URL.createObjectURL(f));
+
+  setImages(prev => [...prev, ...urls].slice(0, 4));
+  setImageFiles(prev => [...prev, ...validFiles].slice(0, 4));
+
+}, []);
 
   const onDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault(); setIsDragging(false);
@@ -782,7 +789,13 @@ const startDetection = async () => {
 
   try {
     const formData = new FormData();
-    formData.append("image_name", "uploaded_food.jpg");
+
+if (!imageFiles.length) {
+  alert("No image selected");
+  return;
+}
+
+formData.append("image", imageFiles[0]);
 
     const response = await fetch(
       "http://127.0.0.1:10000/upload-food-image",
@@ -910,10 +923,16 @@ const startDetection = async () => {
                 {images.map((url, i) => (
                   <div key={i} className="relative group rounded-2xl overflow-hidden aspect-square bg-secondary">
                     <img src={url} alt={`Upload ${i + 1}`} className="w-full h-full object-cover" />
-                    <button onClick={(e) => { e.stopPropagation(); setImages(prev => prev.filter((_, idx) => idx !== i)); }}
-                      className="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/70 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black">
-                      <X size={11} className="text-white" />
-                    </button>
+                    <button
+  onClick={(e) => {
+    e.stopPropagation();
+    setImages(prev => prev.filter((_, idx) => idx !== i));
+    setImageFiles(prev => prev.filter((_, idx) => idx !== i));
+  }}
+  className="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/70 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black"
+>
+  <X size={11} className="text-white" />
+</button>
                     <div className="absolute bottom-2 left-2 bg-black/60 rounded-lg px-2 py-0.5">
                       <span className="text-[10px] font-mono text-white">Photo {i + 1}</span>
                     </div>
