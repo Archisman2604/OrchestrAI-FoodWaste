@@ -798,7 +798,7 @@ if (!imageFiles.length) {
 formData.append("image", imageFiles[0]);
 
     const response = await fetch(
-      "http://127.0.0.1:10000/upload-food-image",
+      "https://orchestrai-foodwaste.onrender.com/upload-food-image",
       {
         method: "POST",
         body: formData,
